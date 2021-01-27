@@ -3,7 +3,7 @@ import { parseConsData, pasePassData } from '../utils';
 
 export default class StarWarsUniverse {
   constructor() {
-    this.starship = [];
+    this.starships = [];
   }
   async _getStarshipCount() {
     const response = await fetch('https://swapi.dev/api/starships/');
@@ -19,38 +19,35 @@ export default class StarWarsUniverse {
     const passenger = ship.passengers;
 
     if (
-      ![undefined, null, 'n/a', '0'].includes(passenger) &&
-      ![undefined, null, 'unknown'].includes(consumable)
+      [undefined, null, 'n/a', '0'].includes(passenger) ||
+      [undefined, null, 'unknown'].includes(consumable)
     ) {
-      return ship;
+      return false;
+    } else {
+      return true;
     }
   }
 
   get theBestStarship() {
-    return this.starship.sort((a, b) => b.maxDaysInSpace - a.maxDaysInSpace)[0];
+    return this.starships.sort(
+      (a, b) => b.maxDaysInSpace - a.maxDaysInSpace
+    )[0];
   }
 
-  async _createStarship() {
+  async _createStarship(count) {
     const ships = [];
-    let response = await fetch('https://swapi.dev/api/starships/');
+    for (let index = 0; index < count; index++) {
+      let response = await fetch(`https://swapi.dev/api/starships/${index}`);
 
-    let data = await response.json();
-
-    ships.push(data);
-    while (data.next) {
-      response = await fetch(`${data.next}`);
-
-      data = await response.json();
-
-      ships.push(data);
+      if (response.status != 404) {
+        let data = await response.json();
+        ships.push(data);
+      }
     }
-
     ships
-      .map((data) => data.results.map((ship) => ship))
-      .flat()
       .filter((ship) => this._validateData(ship))
       .map((ship) =>
-        this.starship.push(
+        this.starships.push(
           new Starship(
             ship.name,
             parseConsData(ship.consumables),
@@ -61,7 +58,7 @@ export default class StarWarsUniverse {
   }
 
   async init() {
-    await this._getStarshipCount();
-    await this._createStarship();
+    const count = await this._getStarshipCount();
+    await this._createStarship(count);
   }
 }
