@@ -6,7 +6,7 @@ export const parseConsData = (data) => {
 
   if (time.includes('year')) {
     return num * 364;
-  } else if (time.includes('mouth')) {
+  } else if (time.includes('month')) {
     return num * 30;
   } else if (time.includes('week')) {
     return num * 7;
