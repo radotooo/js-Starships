@@ -6,7 +6,7 @@ export default class StarWarsUniverse {
     this.starships = [];
   }
   async _getStarshipCount() {
-    const response = await fetch('https://swapi.dev/api/starships/');
+    const response = await fetch('https://swapi.booost.bg/api/');
 
     const data = await response.json();
 
@@ -37,7 +37,7 @@ export default class StarWarsUniverse {
   async _createStarship(count) {
     const ships = [];
     for (let index = 0; index < count; index++) {
-      let response = await fetch(`https://swapi.dev/api/starships/${index}`);
+      let response = await fetch(`https://swapi.booost.bg/api/${index}`);
 
       if (response.status != 404) {
         let data = await response.json();
