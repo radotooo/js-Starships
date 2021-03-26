@@ -14,7 +14,6 @@ export default class StarWarsUniverse {
   }
 
   _validateData(ship) {
-    // console.log(ship);
     const consumable = ship.consumables;
     const passenger = ship.passengers;
 
